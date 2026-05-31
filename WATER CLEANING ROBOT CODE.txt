@@ -1,0 +1,56 @@
+WATER CLEANING ROBOT 
+
+// Pin Definitions
+const int rainSensor = A0;
+const int pirSensor = 2;
+const int trigPin = 3;
+const int echoPin = 4;
+const int leftIR = 5;
+const int rightIR = 6;
+const int statusLED = 7;
+const int motorLeft = 8; // Example for L298N
+const int motorRight = 9;
+
+void setup() {
+  pinMode(pirSensor, INPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(leftIR, INPUT);
+  pinMode(rightIR, INPUT);
+  pinMode(statusLED, OUTPUT);
+  // Initialize motor pins as output
+}
+
+void loop() {
+  // 1. Safety Checks (High Priority)
+  int rainValue = analogRead(rainSensor);
+  bool humanDetected = digitalRead(pirSensor);
+  
+  // Distance check via Ultrasonic
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  long duration = pulseIn(echoPin, HIGH);
+  int distance = duration * 0.034 / 2;
+
+  if (rainValue < 500 || humanDetected || distance < 20) {
+    // Stop Motors and indicate safety status[span_1](start_span)[span_1](end_span)
+    digitalWrite(statusLED, HIGH); // Solid LED for "Stop/Wait[span_2](start_span)"[span_2](end_span)
+    // Add logic to cut motor power
+  } else {
+    // 2. Navigation Logic (Medium Priority)
+    digitalWrite(statusLED, LOW); // Flash/Off for "Active[span_3](start_span)"[span_3](end_span)
+    int leftState = digitalRead(leftIR);
+    int rightState = digitalRead(rightIR);
+    
+    // Differential steering logic based on IR states[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
+    if (leftState == HIGH && rightState == HIGH) {
+      // Move Forward
+    } else if (leftState == LOW) {
+      // Correct Left
+    } else {
+      // Correct Right
+    }
+  }
+}
